@@ -31,9 +31,9 @@ module XapianDb
       config_file_path = "#{Rails.root}/config/xapian_db.yml"
       if File.exist?(config_file_path)
         db_config = if YAML.respond_to?(:unsafe_load_file) # Psych 4.0 way
-                      YAML.unsafe_load_file(ERB.new(File.read(config_file_path)).result)
+                      YAML.unsafe_load(ERB.new(File.read(config_file_path)).result)
                     else
-                      YAML.load_file(ERB.new(File.read(config_file_path)).result)
+                      YAML.load(ERB.new(File.read(config_file_path)).result)
                     end
         env_config = db_config[Rails.env]
         env_config ? configure_from(env_config) : configure_defaults
@@ -52,7 +52,7 @@ module XapianDb
         end
         config.adapter @adapter.try(:to_sym)
         config.writer @writer.try(:to_sym)
-        config.beanstalk_daemon_url @beanstalk_daemon
+        config.beanstalk_daemon_url @beanstalk_daemon_url
         config.resque_queue @resque_queue
         config.sidekiq_queue @sidekiq_queue
         config.language @language.try(:to_sym)
